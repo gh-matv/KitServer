@@ -1,0 +1,13 @@
+{
+  "name": "untitled2",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "^4.18.1",
+    "express-session": "^1.17.3",
+    "got": "^12.1.0",
+    "mongodb": "^4.8.0",
+    "octokit": "^2.0.4",
+    "parse-diff": "^0.9.0",
+    "request": "^2.88.2"
+  }
+}
