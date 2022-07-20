@@ -11,6 +11,7 @@
     "request": "^2.88.2"
   },
   "scripts": {
-    "start": "node webserver.js"
+    "start": "node webserver.js",
+    "test": "node tests.js"
   }
 }
