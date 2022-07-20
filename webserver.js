@@ -68,14 +68,14 @@ app.get('/view/:username', async (req, res) => {
 
 app.get('/onprchange/:pullreqid', async (req, res) => {
 
-	const pr_id = req.params.pullreqid;
+	const pr_id = parseInt(req.params?.pullreqid) || 0;
 	const prinfos = await qq.pulls(pr_id);
 
 	const initiator = prinfos.user.login;
 	const merged_by = prinfos.merged_by?.login;
 
 	const has_been_merged = prinfos.merged;
-	const merged_automatically = prinfos.auto_merge||false;
+	// const merged_automatically = prinfos.auto_merge||false;
 
 	const comment_count = prinfos.comments; // issues/12/comments
 	const comments = comment_count > 0 ? await qq.pr_comments(pr_id) : [];
