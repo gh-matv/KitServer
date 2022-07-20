@@ -20,7 +20,7 @@ const qq = require('./reqs');
 const app = express();
 
 app.use(session({
-	secret: 'keyboard cat',
+	secret: process.env.SESSION_TOKEN_KEY,
 	resave: true,
 	cookie: { maxAge: 3000 },
 	saveUninitialized: false,
