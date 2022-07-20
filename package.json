@@ -9,5 +9,8 @@
     "octokit": "^2.0.4",
     "parse-diff": "^0.9.0",
     "request": "^2.88.2"
+  },
+  "scripts": {
+    "start": "node webserver.js"
   }
 }
