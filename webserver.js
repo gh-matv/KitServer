@@ -15,6 +15,7 @@ const db = new MongoClient("mongodb://localhost:27017");
 
 // Initialize callbacks
 import qq from "./reqs.js";
+import gh_wh from "./github_webhooks.js"
 
 // Start express server
 const app = express();
@@ -26,15 +27,14 @@ app.use(session({
 	saveUninitialized: false,
 }))
 
+gh_wh.register_endpoints(app);
+
 app.get('/', async (req, res) => {
 
 	if(!req.session.views) req.session.views = 0;
 	++req.session.views;
 
 	res.json(await qq.blame("webserver.js"));
-
-	// console.log(process.env.GH_PRIVATE_TOKEN);
-	// res.json(req.session);
 })
 
 app.get('/eval', async (req, res) => {
