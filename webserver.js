@@ -7,7 +7,7 @@ import c from "./config.js";
 
 // Initialization of the database
 const db = new MongoClient("mongodb://localhost:27017");
-(async () => {
+await (async () => {
 	await db.connect();
 	await db.db("Kit").command({ping:1});
 	console.log("Connected to mongo database");
@@ -20,6 +20,7 @@ import gh_wh from "./github_webhooks.js"
 // Start express server
 const app = express();
 
+app.use(express.json( {} ))
 app.use(session({
 	secret: process.env.SESSION_TOKEN_KEY,
 	resave: true,
@@ -100,6 +101,5 @@ app.get('*', (req, res) => {
 	res.send(404);
 })
 
-app.listen(3000);
+app.listen(80);
 console.log("Express server listening on port 3000");
-
