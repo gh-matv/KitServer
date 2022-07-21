@@ -31,6 +31,7 @@ const x = {
     },
     "blame": async (file, expression="master") => {
         const token = process.env.GH_PRIVATE_TOKEN;
+        // https://2fd.github.io/graphdoc/github/gitactor.doc.html
         const query = `
             query {
               repositoryOwner(login: "${OWNER}") {
@@ -46,6 +47,9 @@ const x = {
                             oid
                             author {
                               name
+                              user {
+                                login
+                              }
                             }
                           }
                         }
