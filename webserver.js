@@ -3,6 +3,8 @@ const express = require('express');
 const session = require("express-session");
 const { MongoClient } = require("mongodb");
 
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+
 const c = require('./config');
 
 // Initialization of the database
@@ -15,6 +17,7 @@ const db = new MongoClient("mongodb://localhost:27017");
 
 // Initialize callbacks
 const qq = require('./reqs');
+const {Octokit} = require("@octokit/core");
 
 // Start express server
 const app = express();
@@ -26,12 +29,15 @@ app.use(session({
 	saveUninitialized: false,
 }))
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
 
 	if(!req.session.views) req.session.views = 0;
 	++req.session.views;
 
-	res.json(req.session);
+	res.json(await qq.blame("server.js"));
+
+	// console.log(process.env.GH_PRIVATE_TOKEN);
+	// res.json(req.session);
 })
 
 app.get('/eval', async (req, res) => {
@@ -87,7 +93,7 @@ app.get('/onprchange/:pullreqid', async (req, res) => {
 		initiator,
 		merged_by,
 		has_been_merged,
-		comments,
+		comments, // This is fixed
 		reviews
 	});
 })

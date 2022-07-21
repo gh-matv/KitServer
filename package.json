@@ -2,10 +2,13 @@
   "name": "untitled2",
   "version": "1.0.0",
   "dependencies": {
+    "@octokit/core": "^4.0.4",
+    "@octokit/graphql": "^5.0.0",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
     "got": "^12.1.0",
     "mongodb": "^4.8.0",
+    "node-fetch": "^3.2.9",
     "octokit": "^2.0.4",
     "parse-diff": "^0.9.0",
     "request": "^2.88.2"
