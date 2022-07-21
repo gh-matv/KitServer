@@ -1,5 +1,5 @@
 
-module.exports = {
+const config = {
     constants : {
         pull_request: {
             score_per_comment: -7,
@@ -12,3 +12,5 @@ module.exports = {
         }
     }
 }
+
+export default config;

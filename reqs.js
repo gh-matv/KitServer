@@ -1,13 +1,14 @@
 
-const { Octokit } = require("@octokit/core");
+import Octokit from "@octokit/core";
+import fetch from "node-fetch";
 
 const OWNER = 'gh-matv';
-const REPO = 'KitWorld';
+const REPO = 'KitServer';
 
 const queryer = async (req) => {
 
     const o = new Octokit({
-        auth: process.env.GITHUB_PRIVATE_TOKEN,
+        auth: process.env.GH_PRIVATE_TOKEN,
     });
 
     const x =  await o.request(req, {
@@ -18,7 +19,7 @@ const queryer = async (req) => {
     return x.data;
 }
 
-module.exports = {
+const x = {
     "pulls": async (id) => {
         return await queryer(`GET /repos/{owner}/{repo}/pulls/${id}`)
     },
@@ -29,7 +30,7 @@ module.exports = {
         return await queryer(`GET /repos/{owner}/{repo}/pulls n/${pr_id}/comments`)
     },
     "blame": async (file, expression="master") => {
-        const token = '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';
+        const token = process.env.GH_PRIVATE_TOKEN;
         const query = `
             query {
               repositoryOwner(login: "${OWNER}") {
@@ -67,3 +68,5 @@ module.exports = {
         return await result.json()
     }
 }
+
+export default x;

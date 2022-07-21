@@ -1,11 +1,9 @@
 
-const express = require('express');
-const session = require("express-session");
-const { MongoClient } = require("mongodb");
+import express from "express";
+import session from "express-session";
+import { MongoClient } from "mongodb";
 
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-
-const c = require('./config');
+import c from "./config.js";
 
 // Initialization of the database
 const db = new MongoClient("mongodb://localhost:27017");
@@ -16,8 +14,7 @@ const db = new MongoClient("mongodb://localhost:27017");
 })();
 
 // Initialize callbacks
-const qq = require('./reqs');
-const {Octokit} = require("@octokit/core");
+import qq from "./reqs.js";
 
 // Start express server
 const app = express();
@@ -34,7 +31,7 @@ app.get('/', async (req, res) => {
 	if(!req.session.views) req.session.views = 0;
 	++req.session.views;
 
-	res.json(await qq.blame("server.js"));
+	res.json(await qq.blame("webserver.js"));
 
 	// console.log(process.env.GH_PRIVATE_TOKEN);
 	// res.json(req.session);
