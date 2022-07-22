@@ -1,5 +1,5 @@
 
-const gh_wh = {
+const github_webhooks = {
 	/**
 	 * @param {Express} app
 	 */
@@ -13,4 +13,4 @@ const gh_wh = {
 	}
 }
 
-export default gh_wh;
+export default github_webhooks;

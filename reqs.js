@@ -19,15 +19,15 @@ const queryer = async (req) => {
     return x.data;
 }
 
-const x = {
+const reqs = {
     "pulls": async (id) => {
-        return await queryer(`GET /repos/{owner}/{repo}/pulls/${id}`)
+        return queryer(`GET /repos/{owner}/{repo}/pulls/${id}`)
     },
     "pr_comments": async (pr_id) => {
-        return await queryer(`GET /repos/{owner}/{repo}/issues/${pr_id}/comments`)
+        return queryer(`GET /repos/{owner}/{repo}/issues/${pr_id}/comments`)
     },
     "pr_reviews": async (pr_id) => {
-        return await queryer(`GET /repos/{owner}/{repo}/pulls n/${pr_id}/comments`)
+        return queryer(`GET /repos/{owner}/{repo}/pulls n/${pr_id}/comments`)
     },
     "blame": async (file, expression="master") => {
         const token = process.env.GH_PRIVATE_TOKEN;
@@ -69,8 +69,8 @@ const x = {
             body: JSON.stringify({ query: query })
         });
 
-        return await result.json()
+        return result.json()
     }
 }
 
-export default x;
+export default reqs;
