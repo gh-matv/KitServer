@@ -2,8 +2,10 @@
 // Initialize databases
 
 import sq from "sqlite3";
+import config from "./config.js"
+
 const { Database } = sq.verbose();
-const db = new Database('sqlite.db');
+const db = new Database(config.database.sqlite_filename);
 
 db.serialize(() => {
 

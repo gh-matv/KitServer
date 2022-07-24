@@ -23,7 +23,7 @@ import c from "./config.js";
 
 // Initialize callbacks
 import qq from "./reqs.js";
-import gh_wh from "./github_webhooks.js"
+import gh_wh from "./webhooks/github_webhooks.js"
 
 // Start express server
 const app = express();

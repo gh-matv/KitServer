@@ -1,5 +1,10 @@
 
 const config = {
+
+    database: {
+        sqlite_filename: "sqlite.db"
+    },
+
     constants : {
         pull_request: {
             score_per_comment: -7,
