@@ -1,10 +1,9 @@
 
 import express from "express";
 import session from "express-session";
+
+// MONGODB
 import { MongoClient } from "mongodb";
-
-import c from "./config.js";
-
 // Initialization of the database
 const db = new MongoClient("mongodb://localhost:27017");
 await (async () => {
@@ -12,6 +11,15 @@ await (async () => {
 	await db.db("Kit").command({ping:1});
 	console.log("Connected to mongo database");
 })();
+// END MONGODB
+
+// SQLITE
+import sqlite from "./db.js";
+sqlite.Open("history.db");
+// END SQLITE
+
+// Import configs
+import c from "./config.js";
 
 // Initialize callbacks
 import qq from "./reqs.js";
@@ -102,4 +110,4 @@ app.get('*', (req, res) => {
 })
 
 app.listen(80);
-console.log("Express server listening on port 3000");
+console.log("Express server listening on port 80");

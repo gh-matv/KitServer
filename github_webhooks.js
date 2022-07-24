@@ -1,14 +1,23 @@
 
+
 const github_webhooks = {
 	/**
 	 * @param {Express} app
 	 */
-	register_endpoints: (app) => {
+	register_endpoints: async (app) => {
 
-		app.post("/wh/github/", (req, res) => {
+		console.log("registering webhook endpoints");
+
+		app.get("/wh/github", (_req, res) => { res.send("Only POST on this EP"); });
+		app.post("/wh/github", async (req, res) => {
+
+			const event = req.headers["x-github-event"]; // ["push", "pull_request", ]
+
 			console.log(req.body);
-			res.json({});
-		})
+			console.log(event);
+
+			res.send("done");
+		});
 
 	}
 }
