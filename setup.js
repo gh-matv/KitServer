@@ -14,8 +14,7 @@ db.serialize(() => {
 
 		CREATE TABLE IF NOT EXISTS user (
 		   id INTEGER PRIMARY KEY AUTOINCREMENT,
-		   first_name text NOT NULL,
-		   last_name text NOT NULL
+		   username text NOT NULL
 		);		
 	`);
 

@@ -17,7 +17,7 @@ app.use(express.json({}));
 app.use(session({
 	secret: process.env.SESSION_TOKEN_KEY,
 	resave: true,
-	cookie: {maxAge: 3000},
+	cookie: { maxAge: 3000 },
 	saveUninitialized: false
 }));
 
@@ -30,15 +30,12 @@ app.get('/', async (req, res) => {
 
 	res.json(await github_request.blame("webserver.js"));
 });
-
 app.get('/eval', async (req, res) => {
 	res.json(await github_request.pulls(12));
 });
-
 app.get('/evala', async (req, res) => {
 	res.json(await github_request.pr_comments(12));
 });
-
 app.get('/view/:username', async (req, res) => {
 	let userInfos = await db.db("Kit").collection("User").findOne({username: req.params.username});
 
@@ -60,7 +57,6 @@ app.get('/view/:username', async (req, res) => {
 
 	res.json(userInfos || {});
 });
-
 app.get('/onprchange/:pullreqid', async (req, res) => {
 
 	const pr_id = parseInt(req.params?.pullreqid) || 0;

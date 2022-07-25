@@ -19,10 +19,22 @@ export default class Db_sqlite
 		})
 	}
 
-	static Query(req) {
+	static Query(req, each = (err, {id, info}) => {}) {
 		Db_sqlite.db.serialize(() => {
 			Db_sqlite.db.each(req, (err, row) => {
-				console.log(row.id + ": " + row.info);
+				// console.log(row.id + ": " + row.info);
+				each(err, {id: row.id, info: row.info});
+			});
+		})
+	}
+
+	static PrepareAndQuery(req, param_or_params) {
+		const stmt = Db_sqlite.db.prepare(req);
+
+		return new Promise(resolve => {
+			const row = stmt.all(param_or_params, (err, row) => {
+				if(err !== null) throw err;
+				resolve(row);
 			});
 		})
 	}
