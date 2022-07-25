@@ -5,7 +5,7 @@ const github_webhooks = {
 	/**
 	 * @param {Express} app
 	 */
-	register_endpoints: async (app) => {
+	register_endpoints: (app) => {
 
 		console.log("registering webhook endpoints");
 

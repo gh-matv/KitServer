@@ -1,87 +1,70 @@
 
+import config from "./config.js";
 import express from "express";
 import session from "express-session";
 
-// MONGODB
-import { MongoClient } from "mongodb";
-// Initialization of the database
-const db = new MongoClient("mongodb://localhost:27017");
-await (async () => {
-	await db.connect();
-	await db.db("Kit").command({ping:1});
-	console.log("Connected to mongo database");
-})();
-// END MONGODB
+import sqlite from "./core/database/db_sqlite.js";
+import mongo from "./core/database/db_mongo.js";
 
-// SQLITE
-import sqlite from "./db.js";
-sqlite.Open("history.db");
-// END SQLITE
+import github_request from "./reqs.js";
+import github_webhooks from "./webhooks/github_webhooks.js";
 
-// Import configs
-import c from "./config.js";
+sqlite.Open();
+await mongo.Open()
 
-// Initialize callbacks
-import qq from "./reqs.js";
-import gh_wh from "./webhooks/github_webhooks.js"
-
-// Start express server
 const app = express();
-
-app.use(express.json( {} ))
+app.use(express.json({}));
 app.use(session({
 	secret: process.env.SESSION_TOKEN_KEY,
 	resave: true,
-	cookie: { maxAge: 3000 },
-	saveUninitialized: false,
-}))
+	cookie: {maxAge: 3000},
+	saveUninitialized: false
+}));
 
-gh_wh.register_endpoints(app);
+github_webhooks.register_endpoints(app);
 
 app.get('/', async (req, res) => {
 
-	if(!req.session.views) req.session.views = 0;
+	if (!req.session.views) req.session.views = 0;
 	++req.session.views;
 
-	res.json(await qq.blame("webserver.js"));
-})
+	res.json(await github_request.blame("webserver.js"));
+});
 
 app.get('/eval', async (req, res) => {
-	res.json(await qq.pulls(12));
+	res.json(await github_request.pulls(12));
 });
 
 app.get('/evala', async (req, res) => {
-	res.json(await qq.pr_comments(12))
+	res.json(await github_request.pr_comments(12));
 });
 
 app.get('/view/:username', async (req, res) => {
-	let userInfos = await db.db("Kit").collection("User").findOne({ username: req.params.username});
+	let userInfos = await db.db("Kit").collection("User").findOne({username: req.params.username});
 
 	let score = 1000;
-	for (const historyElement of userInfos.history)
-	{
-		if(historyElement.type.startsWith("pr"))
-		{
-			let data = await db.db("Kit").collection("PullRequests").findOne({ number: historyElement.ref});
-			if(!data.merged) continue;
+	for (const historyElement of userInfos.history) {
+		if (historyElement.type.startsWith("pr")) {
+			let data = await db.db("Kit").collection("PullRequests").findOne({number: historyElement.ref});
+			if (!data.merged) continue;
 
 			// Score change applied immediately when the commit is merged
-			score += data.comments * c.constants.pull_request.score_per_comment;
-			score += data.review_comments * c.constants.pull_request.score_per_review_comment;
-			score += data.additions * c.constants.commit.score_per_addition;
-			score += data.deletions * c.constants.commit.score_per_deletion;
-			score += data.changed_files * c.constants.commit.score_per_changed_file;
+			score += data.comments * config.score.pull_request.score_per_comment;
+			score += data.review_comments * config.score.pull_request.score_per_review_comment;
+			score += data.additions * config.score.commit.score_per_addition;
+			score += data.deletions * config.score.commit.score_per_deletion;
+			score += data.changed_files * config.score.commit.score_per_changed_file;
 		}
 	}
 	userInfos.score = score;
 
-	res.json(userInfos||{});
-})
+	res.json(userInfos || {});
+});
 
 app.get('/onprchange/:pullreqid', async (req, res) => {
 
 	const pr_id = parseInt(req.params?.pullreqid) || 0;
-	const prinfos = await qq.pulls(pr_id);
+	const prinfos = await github_request.pulls(pr_id);
 
 	const initiator = prinfos.user.login;
 	const merged_by = prinfos.merged_by?.login;
@@ -90,10 +73,10 @@ app.get('/onprchange/:pullreqid', async (req, res) => {
 	// const merged_automatically = prinfos.auto_merge||false;
 
 	const comment_count = prinfos.comments; // issues/12/comments
-	const comments = comment_count > 0 ? await qq.pr_comments(pr_id) : [];
+	const comments = comment_count > 0 ? await github_request.pr_comments(pr_id) : [];
 
 	const review_count = prinfos.review_comments;    // pulls/12/comments
-	const reviews = review_count > 0 ? await qq.pr_reviews(pr_id) : [];
+	const reviews = review_count > 0 ? await github_request.pr_reviews(pr_id) : [];
 
 	res.json({
 		initiator,
@@ -102,12 +85,12 @@ app.get('/onprchange/:pullreqid', async (req, res) => {
 		comments, // This is fixed
 		reviews
 	});
-})
+});
 
 // Nothing else matched, 404 ?
 app.get('*', (req, res) => {
 	res.send(404);
-})
+});
 
-app.listen(80);
-console.log("Express server listening on port 80");
+app.listen(config.server.listen_port);
+console.log(`Express server listening on port ${config.server.listen_port}`);
