@@ -24,7 +24,8 @@ db.serialize(() => {
 		CREATE TABLE IF NOT EXISTS action (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			time TEXT DEFAULT CURRENT_TIMESTAMP,
-			descr TEXT DEFAULT ""
+			descr TEXT DEFAULT "",
+			ref INTEGER NOT NULL
 		)
 	
 	`)
@@ -41,16 +42,6 @@ db.serialize(() => {
 		)
 	
 	`)
-
-	/*const stmt = db.prepare("INSERT INTO lorem VALUES (?)");
-	for (let i = 0; i < 10; i++) {
-		stmt.run("Ipsum " + i);
-	}
-	stmt.finalize();
-
-	db.each("SELECT rowid AS id, info FROM lorem", (err, row) => {
-		console.log(row.id + ": " + row.info);
-	});*/
 });
 
 debugger;

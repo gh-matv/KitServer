@@ -1,6 +1,6 @@
 
-import {MongoClient} from "mongodb";
 import config from "../../config.js";
+import { MongoClient } from "mongodb";
 
 export default class Db_mongo
 {

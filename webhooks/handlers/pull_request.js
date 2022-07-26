@@ -15,17 +15,33 @@ async function on_pr_review_added(data) {
 
 	const reviewer = data.review.user.login;
 	const pr_id = data.pull_request.number;
+	let db_userid = 0;
+	let db_actionid = 0;
 
-	const res = await Db_sqlite.PrepareAndQuery(`
-		select user.username
-		from user
-		left join user_action on user_action.uid = user.id
-		left join action on action.id = user_action.aid
-		where user.username = ? and action.id = ?
-		`, [reviewer, pr_id]);
+	// Get user and action ID
+	// Here we use Promise.all to parallelize those queries
+	await Promise.all([
+		Db_sqlite.PrepareAndQuery("select id from action where ref = ?", pr_id).then((val) => db_actionid = val[0]?.id),
+		Db_sqlite.PrepareAndQuery("select user.id from user where username = ?", reviewer).then((val) => db_userid = val[0]?.id),
+	])
 
-	console.log(res);
-	return true;
+	// If the user does not exist in db, create it
+	if(db_userid === undefined) {
+		console.log("User does not exist, creating it !");
+		await Db_sqlite.PrepareAndQuery("insert into user(username) values(?)", reviewer);
+		await Db_sqlite.PrepareAndQuery("select id from user where username = ?", reviewer).then((val) => { db_userid = val[0]?.id; })
+	}
+
+	// If the action doesn't exist in db, create it
+	if(db_actionid === undefined) {
+		console.log("Action does not exist, creating it !");
+		await Db_sqlite.PrepareAndQuery("insert into action(descr, ref) values(?,?)", ["pull_request_review_added", pr_id]);
+		await Db_sqlite.PrepareAndQuery("select max(id) as id from action", []).then((val) => { db_actionid = val[0]?.id; })
+	}
+
+	await Db_sqlite.PrepareAndQuery("insert into user_action(aid, uid) values(?,?)", [db_actionid, db_userid]);
+
+	console.log({db_userid, db_actionid});
 }
 
 export default function handle(event, data) {
