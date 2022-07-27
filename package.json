@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start": "tsc && node build/index.js",
-    "test": "tsc && node build/test.js",
+    "test": "tsc && node build/tests.js",
     "build": "tsc"
   },
   "devDependencies": {
