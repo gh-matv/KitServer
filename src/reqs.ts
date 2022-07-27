@@ -1,5 +1,5 @@
 
-import Octokit from "@octokit/core";
+import { Octokit } from "@octokit/core";
 import fetch from "node-fetch";
 
 const OWNER = 'gh-matv';

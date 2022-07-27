@@ -36,27 +36,6 @@ app.get('/eval', async (req, res) => {
 app.get('/evala', async (req, res) => {
 	res.json(await github_request.pr_comments(12));
 });
-app.get('/view/:username', async (req, res) => {
-	let userInfos = await db.db("Kit").collection("User").findOne({username: req.params.username});
-
-	let score = 1000;
-	for (const historyElement of userInfos.history) {
-		if (historyElement.type.startsWith("pr")) {
-			let data = await db.db("Kit").collection("PullRequests").findOne({number: historyElement.ref});
-			if (!data.merged) continue;
-
-			// Score change applied immediately when the commit is merged
-			score += data.comments * config.score.pull_request.score_per_comment;
-			score += data.review_comments * config.score.pull_request.score_per_review_comment;
-			score += data.additions * config.score.commit.score_per_addition;
-			score += data.deletions * config.score.commit.score_per_deletion;
-			score += data.changed_files * config.score.commit.score_per_changed_file;
-		}
-	}
-	userInfos.score = score;
-
-	res.json(userInfos || {});
-});
 app.get('/onprchange/:pullreqid', async (req, res) => {
 
 	const pr_id = parseInt(req.params?.pullreqid) || 0;
