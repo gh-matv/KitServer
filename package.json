@@ -12,10 +12,17 @@
     "node-fetch": "^3.2.9",
     "octokit": "^2.0.4",
     "parse-diff": "^0.9.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "source-map-loader": "^4.0.0",
+    "sqlite3": "^5.0.10",
+    "ts-loader": "^9.3.1"
   },
   "scripts": {
-    "start": "node webserver.js",
-    "test": "node tests.js"
+    "start": "tsc && node build/index.js",
+    "test": "tsc && node build/tests.js",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.10.0"
   }
 }
