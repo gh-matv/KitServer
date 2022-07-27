@@ -1,7 +1,6 @@
 
 import config from "./config.js";
 import express from "express";
-import session from "express-session";
 
 import sqlite from "./core/database/db_sqlite.js";
 import mongo from "./core/database/db_mongo.js";
@@ -14,12 +13,6 @@ await mongo.Open()
 
 const app = express();
 app.use(express.json({}));
-app.use(session({
-	secret: process.env.SESSION_TOKEN_KEY,
-	resave: true,
-	cookie: { maxAge: 3000 },
-	saveUninitialized: false
-}));
 
 github_webhooks.register_endpoints(app);
 

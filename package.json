@@ -18,8 +18,9 @@
     "ts-loader": "^9.3.1"
   },
   "scripts": {
-    "start": "node src1\\webserver.ts",
-    "test": "node src2\\tests.ts"
+    "start": "tsc && node build/index.js",
+    "test": "tsc && node build/test.js",
+    "build": "tsc"
   },
   "devDependencies": {
     "webpack-cli": "^4.10.0"
