@@ -1,2 +1,4 @@
 
-console.log("TODO : tests.");
+setInterval(() => console.log("TODO : tests."), 1000);
+
+
